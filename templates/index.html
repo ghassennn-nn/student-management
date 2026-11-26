@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f0f2f5;
+            padding: 40px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Student Management System</h1>
+
+    <h3>Add a Student</h3>
+
+    <form action="/students" method="POST">
+        <input type="text" name="name"
+               placeholder="Student name" required>
+        <button type="submit">Add Student</button>
+    </form>
+
+    <h3>Students List</h3>
+
+    {% for student in students %}
+        <p>
+            {{ student.name }}
+
+            <form action="/students/{{ student.id }}/delete"
+                  method="POST">
+                <button type="submit">Delete</button>
+            </form>
+        </p>
+    {% else %}
+        <p>No students yet.</p>
+    {% endfor %}
+</div>
+</body>
+</html>
