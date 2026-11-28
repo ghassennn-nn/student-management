@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -33,11 +34,14 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
+                    docker volume create student-data
+
                     docker rm -f student-app || true
 
                     docker run -d \
                     --restart unless-stopped \
                     -p 5000:5000 \
+                    -v student-data:/app/instance \
                     --name student-app \
                     student-management:latest
                 '''

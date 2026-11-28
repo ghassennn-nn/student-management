@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Student | StudentHub</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            color: #252b48;
+        }
+        .card {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,.15);
+        }
+        h1 { margin-top: 0; }
+        p { color: #888; margin-bottom: 25px; }
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 16px 0 8px;
+        }
+        input, select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        button, a {
+            flex: 1;
+            text-align: center;
+            padding: 13px;
+            border: 0;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button {
+            background: #667eea;
+            color: white;
+        }
+        a {
+            background: #eee;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>✏️ Edit Student</h1>
+        <p>Update the student's information.</p>
+
+        <form method="POST">
+            <label>Full Name</label>
+            <input type="text" name="name"
+                   value="{{ student.name }}" required>
+
+            <label>Email Address</label>
+            <input type="email" name="email"
+                   value="{{ student.email }}">
+
+            <label>Course</label>
+            <input type="text" name="course"
+                   value="{{ student.course }}">
+
+            <label>Status</label>
+            <select name="status">
+                <option value="Active"
+                    {% if student.status == 'Active' %}selected{% endif %}>
+                    Active
+                </option>
+                <option value="Inactive"
+                    {% if student.status == 'Inactive' %}selected{% endif %}>
+                    Inactive
+                </option>
+            </select>
+
+            <div class="actions">
+                <a href="/">Cancel</a>
+                <button type="submit">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

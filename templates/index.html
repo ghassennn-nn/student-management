@@ -2,58 +2,402 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Student Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudentHub Dashboard</title>
+
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: Arial;
-            background: #f0f2f5;
-            padding: 40px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6fc;
+            color: #252b48;
         }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-        }
-        input, button {
-            padding: 10px;
-            margin: 5px;
-        }
-        button {
-            background: #2563eb;
+
+        .layout { display: flex; min-height: 100vh; }
+
+        .sidebar {
+            width: 245px;
+            background: #202344;
             color: white;
-            border: none;
+            padding: 30px 20px;
+            flex-shrink: 0;
+        }
+
+        .brand { font-size: 24px; font-weight: bold; margin-bottom: 45px; }
+        .brand span { color: #a99aff; }
+
+        .nav-title {
+            color: #969ab9;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 25px 10px 12px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 13px 15px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            color: #d7d8e8;
+            text-decoration: none;
+        }
+
+        .nav-item.active, .nav-item:hover {
+            background: #393b68;
+            color: white;
+        }
+
+        .sidebar-bottom {
+            margin-top: 50px;
+            padding: 15px;
+            background: #2d3055;
+            border-radius: 12px;
+            color: #c8c9dd;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .main { flex: 1; min-width: 0; padding: 35px; }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .topbar h1 { font-size: 27px; }
+        .topbar p { color: #9298aa; margin-top: 6px; }
+
+        .profile {
+            background: white;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .welcome {
+            background: linear-gradient(120deg, #667eea, #8055c7);
+            color: white;
+            border-radius: 18px;
+            padding: 27px;
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 { font-size: 23px; margin-bottom: 8px; }
+        .welcome p { opacity: .9; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 23px;
+            border-radius: 15px;
+            box-shadow: 0 4px 18px rgba(30,40,80,.04);
+        }
+
+        .stat-label { color: #9298aa; font-size: 13px; }
+        .stat-number { font-size: 30px; font-weight: bold; margin-top: 12px; }
+        .stat-icon { font-size: 22px; }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 18px rgba(30,40,80,.04);
+        }
+
+        .card h2 { font-size: 18px; margin-bottom: 20px; }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 15px 0 7px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e3e6f0;
+            border-radius: 9px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, select:focus { border-color: #667eea; }
+
+        button {
+            border: 0;
             cursor: pointer;
+            font-weight: 600;
+            border-radius: 9px;
+        }
+
+        .add-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 13px;
+            color: white;
+            background: #6c63d9;
+            font-size: 14px;
+        }
+
+        .search-form { display: flex; gap: 8px; margin-bottom: 18px; }
+        .search-btn { padding: 0 16px; background: #25294c; color: white; }
+        .clear-btn {
+            padding: 11px;
+            background: #f0efff;
+            color: #6658c8;
+            text-decoration: none;
+            border-radius: 9px;
+            font-size: 13px;
+        }
+
+        .student {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f0f1f6;
+        }
+
+        .student:last-child { border-bottom: 0; }
+
+        .student-info { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: #eeedff;
+            color: #6c63d9;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .student-name { font-weight: 600; font-size: 14px; }
+        .student-details { color: #999eb0; font-size: 12px; margin-top: 4px; }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            background: #e6f8ef;
+            color: #25965b;
+            margin-top: 5px;
+        }
+
+        .status.inactive { background: #fff0e7; color: #d47a38; }
+
+        .actions { display: flex; gap: 6px; align-items: center; }
+        .edit-btn, .delete-btn {
+            padding: 8px 10px;
+            font-size: 12px;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+        .edit-btn { background: #eeedff; color: #6658c8; }
+        .delete-btn { background: #fff0f0; color: #df5555; }
+
+        .empty { text-align: center; padding: 35px 10px; color: #999eb0; }
+        .empty div { font-size: 38px; margin-bottom: 10px; }
+
+        .flash {
+            background: #e6f8ef;
+            color: #218653;
+            padding: 13px 17px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        footer { text-align: center; color: #a0a5b5; font-size: 12px; margin-top: 30px; }
+
+        @media(max-width: 1000px) {
+            .content-grid { grid-template-columns: 1fr; }
+        }
+
+        @media(max-width: 700px) {
+            .sidebar { width: 75px; padding: 25px 10px; }
+            .brand { font-size: 17px; text-align: center; }
+            .brand span, .nav-title, .nav-item span, .sidebar-bottom { display: none; }
+            .nav-item { text-align: center; padding: 13px 5px; }
+            .main { padding: 20px 12px; }
+            .stats { grid-template-columns: 1fr; }
+            .topbar h1 { font-size: 21px; }
+            .profile { font-size: 12px; }
+            .student { flex-wrap: wrap; }
         }
     </style>
 </head>
+
 <body>
-<div class="container">
-    <h1>Student Management System</h1>
+<div class="layout">
 
-    <h3>Add a Student</h3>
+    <aside class="sidebar">
+        <div class="brand">🎓 Student<span>Hub</span></div>
 
-    <form action="/students" method="POST">
-        <input type="text" name="name"
-               placeholder="Student name" required>
-        <button type="submit">Add Student</button>
-    </form>
+        <div class="nav-title">Main Menu</div>
+        <a href="/" class="nav-item active">📊 <span>Dashboard</span></a>
+        <a href="#students" class="nav-item">👥 <span>Students</span></a>
+        <a href="#add-student" class="nav-item">➕ <span>Add Student</span></a>
 
-    <h3>Students List</h3>
+        <div class="nav-title">Information</div>
+        <div class="nav-item">⚙️ <span>Management</span></div>
 
-    {% for student in students %}
-        <p>
-            {{ student.name }}
+        <div class="sidebar-bottom">
+            <strong>StudentHub</strong><br>
+            Student Management System<br>
+            Version 2.0
+        </div>
+    </aside>
 
-            <form action="/students/{{ student.id }}/delete"
-                  method="POST">
-                <button type="submit">Delete</button>
-            </form>
-        </p>
-    {% else %}
-        <p>No students yet.</p>
-    {% endfor %}
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Welcome back! Here's your student overview.</p>
+            </div>
+            <div class="profile">👤 Administrator</div>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="flash">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <section class="welcome">
+            <h2>Welcome to StudentHub 👋</h2>
+            <p>Manage your students, track information and keep everything organized.</p>
+        </section>
+
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-label">Total Students</div>
+                <div class="stat-number">{{ stats.total or 0 }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-label">Active Students</div>
+                <div class="stat-number">{{ stats.active or 0 }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">⏸️</div>
+                <div class="stat-label">Inactive Students</div>
+                <div class="stat-number">{{ stats.inactive or 0 }}</div>
+            </div>
+        </section>
+
+        <section class="content-grid">
+
+            <div class="card" id="add-student">
+                <h2>➕ Add New Student</h2>
+
+                <form action="/students" method="POST">
+                    <label>Full Name *</label>
+                    <input type="text" name="name" placeholder="Enter full name" required>
+
+                    <label>Email Address</label>
+                    <input type="email" name="email" placeholder="student@example.com">
+
+                    <label>Course</label>
+                    <input type="text" name="course" placeholder="Enter course">
+
+                    <label>Status</label>
+                    <select name="status">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+
+                    <button class="add-btn" type="submit">+ Add Student</button>
+                </form>
+            </div>
+
+            <div class="card" id="students">
+                <h2>👥 Students Directory</h2>
+
+                <form action="/" method="GET" class="search-form">
+                    <input type="text" name="search"
+                           placeholder="Search students..."
+                           value="{{ search }}">
+                    <button class="search-btn" type="submit">Search</button>
+                    {% if search %}
+                        <a href="/" class="clear-btn">Clear</a>
+                    {% endif %}
+                </form>
+
+                {% for student in students %}
+                    <div class="student">
+                        <div class="student-info">
+                            <div class="avatar">{{ student.name[0]|upper }}</div>
+                            <div>
+                                <div class="student-name">{{ student.name }}</div>
+                                <div class="student-details">
+                                    #{{ student.id }} · {{ student.email or 'No email' }}
+                                </div>
+                                <div class="student-details">
+                                    {{ student.course or 'No course' }} · {{ student.created_at }}
+                                </div>
+                                <span class="status {% if student.status == 'Inactive' %}inactive{% endif %}">
+                                    {{ student.status }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <a class="edit-btn"
+                               href="{{ url_for('edit_student', student_id=student.id) }}">
+                                Edit
+                            </a>
+
+                            <form action="{{ url_for('delete_student', student_id=student.id) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Delete this student?');">
+                                <button class="delete-btn" type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="empty">
+                        <div>📚</div>
+                        <strong>No students found</strong>
+                        <p>Add a student or try another search.</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </section>
+
+        <footer>StudentHub © 2026 · Student Management System</footer>
+
+    </main>
 </div>
 </body>
 </html>
